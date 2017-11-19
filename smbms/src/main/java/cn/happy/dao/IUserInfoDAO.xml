@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.happy.dao.IUserInfoDAO">
+
+    <!--登陆-->
+   <select id="Login" resultType="UserInfo">
+         SELECT *  FROM smbms_user WHERE  usercode=#{userCode} AND  userPassword=#{userPassword}
+   </select>
+
+    <!--2.查询单页信息-->
+    <select id="findOnePageData" resultType="UserInfo">
+        select * from smbms_user
+        <where>
+            <if test="userName!=null and userName!=''">
+                userName LIKE '%' #{userName} '%'
+            </if>
+        </where>
+        order BY id DESC
+        limit #{pageIndex},#{pageSize}
+    </select>
+
+    <!--3.总记录数-->
+    <select id="getTotalRecords" resultType="int">
+        select count(1) from smbms_user
+        <where>
+            <if test="userName!=null and userName!=''">
+                userName LIKE '%' #{userName} '%'
+            </if>
+        </where>
+    </select>
+
+
+    <!--添加-->
+       <insert id="addUser" parameterType="int">
+           INSERT INTO smbms_user
+           <trim prefix="(" suffix=")" suffixOverrides=",">
+               <if test="userCode!=null">userCode,</if>
+               <if test="userName!=null">userName,</if>
+               <if test="userPassword!=null">userPassword,</if>
+               <if test="gender!=null">gender,</if>
+               <if test="birthday!=null">birthday,</if>
+               <if test="phone!=null">phone,</if>
+               <if test="address!=null">address,</if>
+               <if test="userType!=null">userType,</if>
+               <if test="createdBy!=null">createdBy,</if>
+               <if test="creationDate!=null">creationDate,</if>
+           </trim>
+           VALUES
+           <trim prefix="(" suffix=")" suffixOverrides=",">
+               <if test="userCode!=null">#{userCode},</if>
+               <if test="userName!=null">#{userName},</if>
+               <if test="userPassword!=null">#{userPassword},</if>
+               <if test="gender!=null">#{gender},</if>
+               <if test="birthday!=null">#{birthday},</if>
+               <if test="phone!=null">#{phone},</if>
+               <if test="address!=null">#{address},</if>
+               <if test="userType!=null">#{userType},</if>
+               <if test="createdBy!=null">#{createdBy},</if>
+               <if test="creationDate!=null">#{creationDate},</if>
+           </trim>
+       </insert>
+
+ <!--批量删除-->
+    <delete id="delectUser">
+        delete from smbms_user where id =#{id}
+         <!--<foreach collection="array" item="item" open="(" separator="," close=")">
+             #{item}
+         </foreach>-->
+    </delete>
+
+    <!--根据id查询用户信息-->
+    <select id="getAllUserId" resultType="UserInfo">
+        SELECT * from smbms_user WHERE id=#{id}
+    </select>
+
+   <!--修改-->
+    <update id="updataUser" >
+       update smbms_user SET userName=#{userName},gender=#{gender},birthday=#{birthday},phone=#{phone},address=#{address},userType=#{userType},userPassword=#{userPassword} WHERE id=#{id}
+    </update>
+
+        </mapper>
